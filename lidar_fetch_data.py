@@ -17,7 +17,7 @@ class Lidar_Data_Fetch:
         self.fetch_json_path = fetch_json_path
         # todo if folder not exist create folder structure
         self.out_put_laz_path = "./data/laz/temp.laz"
-        self.out_put_tif_path = "./data/laz/temp.tif"
+        self.out_put_tif_path = "./data/tif/temp.tif"
 
     def __readFetchJson(self, path: str) -> dict:
         try:
