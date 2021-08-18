@@ -6,7 +6,7 @@ import numpy as np
 
 class ElevationExtractor:
 
-    def __init__(self, file_path: str, crs_epgs) -> None:
+    def __init__(self, file_path: str, crs_epgs=26915) -> None:
 
         self.file_path = file_path
         self.las = self.__point_data_file(self.file_path)
@@ -29,5 +29,11 @@ class ElevationExtractor:
         df['elevation'] = elevetions
         df['geometry'] = geometry_points
         df = df.set_geometry("geometry")
+        df.set_crs(epsg=self.crs_epgs, inplace=True)
 
+        return df
+
+    def covert_crs(self, crs_epgs: int, df: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
+
+        df['geometry'] = df['geometry'].to_crs(crs_epgs)
         return df
