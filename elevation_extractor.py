@@ -1,6 +1,7 @@
 import laspy
 import geopandas as gpd
 from shapely.geometry import box, Point, Polygon
+import numpy as np
 
 
 class ElevationExtractor:
