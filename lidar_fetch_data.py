@@ -99,3 +99,4 @@ class Lidar_Data_Fetch:
             os.mkdir("./data/laz/")
         if (not os.path.isdir('./data/tif')):
             os.mkdir("./data/tif/")
+        

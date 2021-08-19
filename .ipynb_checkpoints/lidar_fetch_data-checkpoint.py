@@ -52,6 +52,7 @@ class Lidar_Data_Fetch:
         polygon_input = polygon_input[:-2]
         polygon_input += '))'
         
+        print(polygon_input)
 
         return f"({[minx, maxx]},{[miny,maxy]})", polygon_input
 
@@ -98,3 +99,4 @@ class Lidar_Data_Fetch:
             os.mkdir("./data/laz/")
         if (not os.path.isdir('./data/tif')):
             os.mkdir("./data/tif/")
+        
