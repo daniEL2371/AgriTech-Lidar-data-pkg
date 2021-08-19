@@ -46,11 +46,13 @@ class Lidar_Data_Fetch:
 
         polygon_input = 'POLYGON(('
 
-        xcord, ycord = polygon.exterior.coords.xy
+        xcord, ycord = polygon_df['geometry'][0].exterior.coords.xy
         for x, y in zip(list(xcord), list(ycord)):
-            polygon_input += f'{x} {y},'
-        temp = polygon_input[:-1]
-        temp += '))'
+            polygon_input += f'{x} {y}, '
+        polygon_input = polygon_input[:-2]
+        polygon_input += '))'
+        
+        print(polygon_input)
 
         return f"({[minx, maxx]},{[miny,maxy]})", polygon_input
 
@@ -66,7 +68,7 @@ class Lidar_Data_Fetch:
         fetch_json['pipeline'][0]['filename'] = full_dataset_path
         fetch_json['pipeline'][0]['bounds'] = boundaries
 
-        fetch_json['pipeline'][1]['bounds'] = polygon_input
+        fetch_json['pipeline'][1]['polygon'] = polygon_input
 
         fetch_json['pipeline'][4]['out_srs'] = f'EPSG:{self.output_epsg}'
 
@@ -92,4 +94,8 @@ class Lidar_Data_Fetch:
         if (not os.path.isdir('./data')):
             os.mkdir("./data")
             os.mkdir("./data/laz/")
+            os.mkdir("./data/tif/")
+        if (not os.path.isdir('./data/laz')):
+            os.mkdir("./data/laz/")
+        if (not os.path.isdir('./data/tif')):
             os.mkdir("./data/tif/")
