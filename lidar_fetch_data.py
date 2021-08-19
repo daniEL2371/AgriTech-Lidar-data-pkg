@@ -1,6 +1,6 @@
 
 import geopandas as gpd
-
+import os
 import pdal
 import json
 import ErrorMsgs
@@ -17,6 +17,8 @@ class Lidar_Data_Fetch:
     def __init__(self, public_data_url, epsg=26915, fetch_json_path="./fetch.json") -> None:
         self.public_data_url = public_data_url
         self.fetch_json_path = fetch_json_path
+
+        self.__createDataFolderStruct()
 
         self.input_epsg = 3857
         self.output_epsg = epsg
@@ -85,5 +87,7 @@ class Lidar_Data_Fetch:
             print(e)
 
     def __createDataFolderStruct(self):
-        # todo create folder structure for output folder
-        pass
+        if (not os.path.isdir('./data')):
+            os.mkdir("./data")
+            os.mkdir("./data/laz/")
+            os.mkdir("./data/tif/")
