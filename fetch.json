@@ -7,21 +7,32 @@
       "tag": "readdata"
     },
     {
-      "limits": "Classification![2:7], Classification![9:9]",
+      "limits": "Classification![7:7]",
       "type": "filters.range",
       "tag": "nonoise"
     },
+
     {
-      "out_srs": "EPSG:26915",
-      "type": "filters.reprojection",
-      "tag": "reprojection"
+      "assignment": "Classification[:]=0",
+      "tag": "wipeclasses",
+      "type": "filters.assign"
     },
+    {
+      
+      "in_srs":"EPSG:3857 ",
+      "out_srs": "",
+      "tag": "reprojection",
+      "type": "filters.reprojection"
+
+    },
+        
     {
       "filename": "",
       "inputs": [ "reprojection" ],
       "tag": "writerslas",
       "type": "writers.las"
     },
+    
     {
       "filename": "",
       "gdalopts": "tiled=yes,     compress=deflate",
