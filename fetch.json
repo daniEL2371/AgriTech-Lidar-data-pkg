@@ -7,6 +7,10 @@
       "tag": "readdata"
     },
     {
+        "polygon": "",
+        "type": "filters.crop"
+    },
+    {
       "limits": "Classification![7:7]",
       "type": "filters.range",
       "tag": "nonoise"
@@ -32,7 +36,7 @@
       "tag": "writerslas",
       "type": "writers.las"
     },
-    
+
     {
       "filename": "",
       "gdalopts": "tiled=yes,     compress=deflate",
