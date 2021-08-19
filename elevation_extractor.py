@@ -19,17 +19,21 @@ class ElevationExtractor:
             print("File not found")
 
     def get_elevetion(self, array_data):
+        
+        if array_data:
 
-        for i in array_data:
-            geometry_points = [Point(x, y) for x, y in zip(i["X"], i["Y"])]
-            elevetions = i["Z"]
-            df = gpd.GeoDataFrame(columns=["elevation", "geometry"])
-            df['elevation'] = elevetions
-            df['geometry'] = geometry_points
-            df = df.set_geometry("geometry")
-            df.set_crs(epsg=self.crs_epgs, inplace=True)
+            for i in array_data:
+                geometry_points = [Point(x, y) for x, y in zip(i["X"], i["Y"])]
+                elevetions = i["Z"]
+                df = gpd.GeoDataFrame(columns=["elevation", "geometry"])
+                df['elevation'] = elevetions
+                df['geometry'] = geometry_points
+                df = df.set_geometry("geometry")
+                df.set_crs(epsg=self.crs_epgs, inplace=True)
 
-        return df
+            return df
+
+        return None
 
     def get_elevetion_from_file(self, file_path: str):
 
