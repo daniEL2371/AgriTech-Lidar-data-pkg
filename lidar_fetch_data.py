@@ -80,6 +80,7 @@ class Lidar_Data_Fetch:
             pipeline.execute()
             metadata = pipeline.metadata
             log = pipeline.log
+            return pipeline.arrays, self.output_epsg
         except RuntimeError as e:
             print(e)
 
