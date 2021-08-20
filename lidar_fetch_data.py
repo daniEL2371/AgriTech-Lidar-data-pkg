@@ -70,10 +70,10 @@ class Lidar_Data_Fetch:
 
         fetch_json['pipeline'][1]['polygon'] = polygon_input
 
-        fetch_json['pipeline'][4]['out_srs'] = f'EPSG:{self.output_epsg}'
+        fetch_json['pipeline'][6]['out_srs'] = f'EPSG:{self.output_epsg}'
 
-        fetch_json['pipeline'][5]['filename'] = self.out_put_laz_path
-        fetch_json['pipeline'][6]['filename'] = self.out_put_tif_path
+        fetch_json['pipeline'][7]['filename'] = self.out_put_laz_path
+        fetch_json['pipeline'][8]['filename'] = self.out_put_tif_path
 
         pipeline = pdal.Pipeline(json.dumps(fetch_json))
 
