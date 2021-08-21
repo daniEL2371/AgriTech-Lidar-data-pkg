@@ -1,0 +1,531 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, minimum-scale=1" />
+<meta name="generator" content="pdoc 0.8.1" />
+<title>AgriTech-Lidar-data-pkg.lidar_fetch_data API documentation</title>
+<meta name="description" content="" />
+<link href='https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.0/normalize.min.css' rel='stylesheet'>
+<link href='https://cdnjs.cloudflare.com/ajax/libs/10up-sanitize.css/8.0.0/sanitize.min.css' rel='stylesheet'>
+<link href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/styles/github.min.css" rel="stylesheet">
+<style>.flex{display:flex !important}body{line-height:1.5em}#content{padding:20px}#sidebar{padding:30px;overflow:hidden}#sidebar > *:last-child{margin-bottom:2cm}.http-server-breadcrumbs{font-size:130%;margin:0 0 15px 0}#footer{font-size:.75em;padding:5px 30px;border-top:1px solid #ddd;text-align:right}#footer p{margin:0 0 0 1em;display:inline-block}#footer p:last-child{margin-right:30px}h1,h2,h3,h4,h5{font-weight:300}h1{font-size:2.5em;line-height:1.1em}h2{font-size:1.75em;margin:1em 0 .50em 0}h3{font-size:1.4em;margin:25px 0 10px 0}h4{margin:0;font-size:105%}a{color:#058;text-decoration:none;transition:color .3s ease-in-out}a:hover{color:#e82}.title code{font-weight:bold}h2[id^="header-"]{margin-top:2em}.ident{color:#900}pre code{background:#f8f8f8;font-size:.8em;line-height:1.4em}code{background:#f2f2f1;padding:1px 4px;overflow-wrap:break-word}h1 code{background:transparent}pre{background:#f8f8f8;border:0;border-top:1px solid #ccc;border-bottom:1px solid #ccc;margin:1em 0;padding:1ex}#http-server-module-list{display:flex;flex-flow:column}#http-server-module-list div{display:flex}#http-server-module-list dt{min-width:10%}#http-server-module-list p{margin-top:0}.toc ul,#index{list-style-type:none;margin:0;padding:0}#index code{background:transparent}#index h3{border-bottom:1px solid #ddd}#index ul{padding:0}#index h4{margin-top:.6em;font-weight:bold}@media (min-width:200ex){#index .two-column{column-count:2}}@media (min-width:300ex){#index .two-column{column-count:3}}dl{margin-bottom:2em}dl dl:last-child{margin-bottom:4em}dd{margin:0 0 1em 3em}#header-classes + dl > dd{margin-bottom:3em}dd dd{margin-left:2em}dd p{margin:10px 0}.name{background:#eee;font-weight:bold;font-size:.85em;padding:5px 10px;display:inline-block;min-width:40%}.name:hover{background:#e0e0e0}.name > span:first-child{white-space:nowrap}.name.class > span:nth-child(2){margin-left:.4em}.inherited{color:#999;border-left:5px solid #eee;padding-left:1em}.inheritance em{font-style:normal;font-weight:bold}.desc h2{font-weight:400;font-size:1.25em}.desc h3{font-size:1em}.desc dt code{background:inherit}.source summary,.git-link-div{color:#666;text-align:right;font-weight:400;font-size:.8em;text-transform:uppercase}.source summary > *{white-space:nowrap;cursor:pointer}.git-link{color:inherit;margin-left:1em}.source pre{max-height:500px;overflow:auto;margin:0}.source pre code{font-size:12px;overflow:visible}.hlist{list-style:none}.hlist li{display:inline}.hlist li:after{content:',\2002'}.hlist li:last-child:after{content:none}.hlist .hlist{display:inline;padding-left:1em}img{max-width:100%}.admonition{padding:.1em .5em;margin-bottom:1em}.admonition-title{font-weight:bold}.admonition.note,.admonition.info,.admonition.important{background:#aef}.admonition.todo,.admonition.versionadded,.admonition.tip,.admonition.hint{background:#dfd}.admonition.warning,.admonition.versionchanged,.admonition.deprecated{background:#fd4}.admonition.error,.admonition.danger,.admonition.caution{background:lightpink}</style>
+<style media="screen and (min-width: 700px)">@media screen and (min-width:700px){#sidebar{width:30%;height:100vh;overflow:auto;position:sticky;top:0}#content{width:70%;max-width:100ch;padding:3em 4em;border-left:1px solid #ddd}pre code{font-size:1em}.item .name{font-size:1em}main{display:flex;flex-direction:row-reverse;justify-content:flex-end}.toc ul ul,#index ul{padding-left:1.5em}.toc > ul > li{margin-top:.5em}}</style>
+<style media="print">@media print{#sidebar h1{page-break-before:always}.source{display:none}}@media print{*{background:transparent !important;color:#000 !important;box-shadow:none !important;text-shadow:none !important}a[href]:after{content:" (" attr(href) ")";font-size:90%}a[href][title]:after{content:none}abbr[title]:after{content:" (" attr(title) ")"}.ir a:after,a[href^="javascript:"]:after,a[href^="#"]:after{content:""}pre,blockquote{border:1px solid #999;page-break-inside:avoid}thead{display:table-header-group}tr,img{page-break-inside:avoid}img{max-width:100% !important}@page{margin:0.5cm}p,h2,h3{orphans:3;widows:3}h1,h2,h3,h4,h5,h6{page-break-after:avoid}}</style>
+</head>
+<body>
+<main>
+<article id="content">
+<header>
+<h1 class="title">Module <code>AgriTech-Lidar-data-pkg.lidar_fetch_data</code></h1>
+</header>
+<section id="section-intro">
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">import geopandas as gpd
+import os
+import pdal
+import json
+import ErrorMsgs
+
+from boundaries import Boundaries
+from shapely.geometry import Polygon, Point
+
+
+err_msgs = ErrorMsgs.getErrorObj()
+
+
+class Lidar_Data_Fetch:
+    &#34;&#34;&#34;This class is used to fetch lidar elevation data points from a public data file (&#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;).
+    It uses pdal.io pipeline (https://pdal.io/) to fetch, translate and manipulate cloud datapoints under the hood. the pdal.io pipeline expects
+    a pipeline description in the form of JSON. A template for the pipeline json file is defined int the root directory (fetch.json file).
+    &#34;&#34;&#34;
+
+    def __init__(self, public_data_url=&#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;, epsg=26915, fetch_json_path=&#34;./fetch.json&#34;) -&gt; None:
+        &#34;&#34;&#34;This method is used to instantiate the class
+
+        Args:
+            public_data_url (str): The publc url where the cloud point data is located. Defaults to &#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;
+            epsg (int, optional): The coordinate reference system (epsg value, i.e refer to https://epsg.io/) used by the user. Defaults to 26915 (NAD83 / UTM zone 15N).
+            fetch_json_path (str, optional): a template pdal pipeline description in the form of JSON. Defaults to &#34;./fetch.json&#34;.
+        &#34;&#34;&#34;
+        self.public_data_url = public_data_url
+        self.fetch_json_path = fetch_json_path
+
+        self.__createDataFolderStruct()
+
+        self.input_epsg = 3857
+        self.output_epsg = epsg
+
+        # todo if folder not exist create folder structure
+        self.out_put_laz_path = &#34;./data/laz/temp.laz&#34;
+        self.out_put_tif_path = &#34;./data/tif/temp.tif&#34;
+
+    def __readFetchJson(self, path: str) -&gt; dict:
+        &#34;&#34;&#34;This method reads json file using python json lib.
+
+        Args:
+            path (str): path for the json file
+
+        Returns:
+            dict: a dictionary object of the parsed json file
+        &#34;&#34;&#34;
+        try:
+            with open(path, &#39;r&#39;) as json_file:
+                dict_obj = json.load(json_file)
+            return dict_obj
+
+        except FileNotFoundError as e:
+            print(err_msgs[&#39;FETCH_JSON_FILE_NOT_FOUND&#39;])
+
+    def get_polygon_boundaries(self, polygon: Polygon) -&gt; tuple:
+        &#34;&#34;&#34;This method is used to calculate rectangular bounds of a given polygon and returns a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format (i.e the format our pdal pipeline&#39;s reader.ept (https://pdal.io/stages/readers.ept.html#readers-ept) expects. example ([-8242669, -8242529], [4966549, 4966674])).
+        It also returns a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+
+        Args:
+            polygon (Polygon): a given shapely.geometry.Polygon object
+
+        Returns:
+            tuple: returns a 2 element tuple in which the first is  a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format and the second is a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+        &#34;&#34;&#34;
+        polygon_df = gpd.GeoDataFrame([polygon], columns=[&#39;geometry&#39;])
+
+        polygon_df.set_crs(epsg=self.output_epsg, inplace=True)
+        polygon_df[&#39;geometry&#39;] = polygon_df[&#39;geometry&#39;].to_crs(
+            epsg=self.input_epsg)
+
+        minx, miny, maxx, maxy = polygon_df[&#39;geometry&#39;][0].bounds
+
+        polygon_input = &#39;POLYGON((&#39;
+
+        xcord, ycord = polygon_df[&#39;geometry&#39;][0].exterior.coords.xy
+        for x, y in zip(list(xcord), list(ycord)):
+            polygon_input += f&#39;{x} {y}, &#39;
+        polygon_input = polygon_input[:-2]
+        polygon_input += &#39;))&#39;
+
+        return f&#34;({[minx, maxx]},{[miny,maxy]})&#34;, polygon_input
+
+    def getPipeline(self, region: str, polygon: Polygon):
+        &#34;&#34;&#34;This method prepares our fetching pipeline using by using pipeline json description found in the root directory of the package. 
+
+        Args:
+            region (str): the region defines the region  point cloud data resource. 
+            polygon (Polygon): the polygon  is a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched
+
+        Returns:
+            pdal.Pipeline: returns a prepared pdal pipeline object
+        &#34;&#34;&#34;
+
+        fetch_json = self.__readFetchJson(self.fetch_json_path)
+        # BOUND = &#34;([-10425171.94, -10423171.94], [5164494.71, 5166494.71])&#34;
+
+        boundaries, polygon_input = self.get_polygon_boundaries(polygon)
+
+        full_dataset_path = f&#34;{self.public_data_url}{region}/ept.json&#34;
+
+        fetch_json[&#39;pipeline&#39;][0][&#39;filename&#39;] = full_dataset_path
+        fetch_json[&#39;pipeline&#39;][0][&#39;bounds&#39;] = boundaries
+
+        fetch_json[&#39;pipeline&#39;][1][&#39;polygon&#39;] = polygon_input
+
+        fetch_json[&#39;pipeline&#39;][6][&#39;out_srs&#39;] = f&#39;EPSG:{self.output_epsg}&#39;
+
+#         fetch_json[&#39;pipeline&#39;][7][&#39;filename&#39;] = self.out_put_laz_path
+#         fetch_json[&#39;pipeline&#39;][8][&#39;filename&#39;] = self.out_put_tif_path
+
+        pipeline = pdal.Pipeline(json.dumps(fetch_json))
+
+        return pipeline
+
+    def runPipeline(self, region: str, polygon: Polygon):
+        &#34;&#34;&#34;reads the point cloud data from the EPT resource on AWS. We give it a region and a boundary polygon.
+
+        Args:
+            region (str): region of the cloud data EPT resource 
+            polygon (Polygon): a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched.
+
+        Returns:
+            list: it returns a list of a numpy array of cloud point data 
+        &#34;&#34;&#34;
+        pipeline = self.getPipeline(region, polygon)
+
+        try:
+            pipeline.execute()
+            metadata = pipeline.metadata
+            log = pipeline.log
+            return pipeline.arrays, self.output_epsg
+        except RuntimeError as e:
+            print(e)
+
+    def __createDataFolderStruct(self):
+        &#34;&#34;&#34;This method creates a data/laz and data/tif dir if not exist
+        &#34;&#34;&#34;
+        if (not os.path.isdir(&#39;./data&#39;)):
+            os.mkdir(&#34;./data&#34;)
+            os.mkdir(&#34;./data/laz/&#34;)
+            os.mkdir(&#34;./data/tif/&#34;)
+        if (not os.path.isdir(&#39;./data/laz&#39;)):
+            os.mkdir(&#34;./data/laz/&#34;)
+        if (not os.path.isdir(&#39;./data/tif&#39;)):
+            os.mkdir(&#34;./data/tif/&#34;)</code></pre>
+</details>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+</section>
+<section>
+<h2 class="section-title" id="header-classes">Classes</h2>
+<dl>
+<dt id="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch"><code class="flex name class">
+<span>class <span class="ident">Lidar_Data_Fetch</span></span>
+<span>(</span><span>public_data_url='https://s3-us-west-2.amazonaws.com/usgs-lidar-public/', epsg=26915, fetch_json_path='./fetch.json')</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This class is used to fetch lidar elevation data points from a public data file ("https://s3-us-west-2.amazonaws.com/usgs-lidar-public/").
+It uses pdal.io pipeline (<a href="https://pdal.io/">https://pdal.io/</a>) to fetch, translate and manipulate cloud datapoints under the hood. the pdal.io pipeline expects
+a pipeline description in the form of JSON. A template for the pipeline json file is defined int the root directory (fetch.json file).</p>
+<p>This method is used to instantiate the class</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>public_data_url</code></strong> :&ensp;<code>str</code></dt>
+<dd>The publc url where the cloud point data is located. Defaults to "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/"</dd>
+<dt><strong><code>epsg</code></strong> :&ensp;<code>int</code>, optional</dt>
+<dd>The coordinate reference system (epsg value, i.e refer to <a href="https://epsg.io/">https://epsg.io/</a>) used by the user. Defaults to 26915 (NAD83 / UTM zone 15N).</dd>
+<dt><strong><code>fetch_json_path</code></strong> :&ensp;<code>str</code>, optional</dt>
+<dd>a template pdal pipeline description in the form of JSON. Defaults to "./fetch.json".</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">class Lidar_Data_Fetch:
+    &#34;&#34;&#34;This class is used to fetch lidar elevation data points from a public data file (&#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;).
+    It uses pdal.io pipeline (https://pdal.io/) to fetch, translate and manipulate cloud datapoints under the hood. the pdal.io pipeline expects
+    a pipeline description in the form of JSON. A template for the pipeline json file is defined int the root directory (fetch.json file).
+    &#34;&#34;&#34;
+
+    def __init__(self, public_data_url=&#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;, epsg=26915, fetch_json_path=&#34;./fetch.json&#34;) -&gt; None:
+        &#34;&#34;&#34;This method is used to instantiate the class
+
+        Args:
+            public_data_url (str): The publc url where the cloud point data is located. Defaults to &#34;https://s3-us-west-2.amazonaws.com/usgs-lidar-public/&#34;
+            epsg (int, optional): The coordinate reference system (epsg value, i.e refer to https://epsg.io/) used by the user. Defaults to 26915 (NAD83 / UTM zone 15N).
+            fetch_json_path (str, optional): a template pdal pipeline description in the form of JSON. Defaults to &#34;./fetch.json&#34;.
+        &#34;&#34;&#34;
+        self.public_data_url = public_data_url
+        self.fetch_json_path = fetch_json_path
+
+        self.__createDataFolderStruct()
+
+        self.input_epsg = 3857
+        self.output_epsg = epsg
+
+        # todo if folder not exist create folder structure
+        self.out_put_laz_path = &#34;./data/laz/temp.laz&#34;
+        self.out_put_tif_path = &#34;./data/tif/temp.tif&#34;
+
+    def __readFetchJson(self, path: str) -&gt; dict:
+        &#34;&#34;&#34;This method reads json file using python json lib.
+
+        Args:
+            path (str): path for the json file
+
+        Returns:
+            dict: a dictionary object of the parsed json file
+        &#34;&#34;&#34;
+        try:
+            with open(path, &#39;r&#39;) as json_file:
+                dict_obj = json.load(json_file)
+            return dict_obj
+
+        except FileNotFoundError as e:
+            print(err_msgs[&#39;FETCH_JSON_FILE_NOT_FOUND&#39;])
+
+    def get_polygon_boundaries(self, polygon: Polygon) -&gt; tuple:
+        &#34;&#34;&#34;This method is used to calculate rectangular bounds of a given polygon and returns a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format (i.e the format our pdal pipeline&#39;s reader.ept (https://pdal.io/stages/readers.ept.html#readers-ept) expects. example ([-8242669, -8242529], [4966549, 4966674])).
+        It also returns a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+
+        Args:
+            polygon (Polygon): a given shapely.geometry.Polygon object
+
+        Returns:
+            tuple: returns a 2 element tuple in which the first is  a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format and the second is a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+        &#34;&#34;&#34;
+        polygon_df = gpd.GeoDataFrame([polygon], columns=[&#39;geometry&#39;])
+
+        polygon_df.set_crs(epsg=self.output_epsg, inplace=True)
+        polygon_df[&#39;geometry&#39;] = polygon_df[&#39;geometry&#39;].to_crs(
+            epsg=self.input_epsg)
+
+        minx, miny, maxx, maxy = polygon_df[&#39;geometry&#39;][0].bounds
+
+        polygon_input = &#39;POLYGON((&#39;
+
+        xcord, ycord = polygon_df[&#39;geometry&#39;][0].exterior.coords.xy
+        for x, y in zip(list(xcord), list(ycord)):
+            polygon_input += f&#39;{x} {y}, &#39;
+        polygon_input = polygon_input[:-2]
+        polygon_input += &#39;))&#39;
+
+        return f&#34;({[minx, maxx]},{[miny,maxy]})&#34;, polygon_input
+
+    def getPipeline(self, region: str, polygon: Polygon):
+        &#34;&#34;&#34;This method prepares our fetching pipeline using by using pipeline json description found in the root directory of the package. 
+
+        Args:
+            region (str): the region defines the region  point cloud data resource. 
+            polygon (Polygon): the polygon  is a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched
+
+        Returns:
+            pdal.Pipeline: returns a prepared pdal pipeline object
+        &#34;&#34;&#34;
+
+        fetch_json = self.__readFetchJson(self.fetch_json_path)
+        # BOUND = &#34;([-10425171.94, -10423171.94], [5164494.71, 5166494.71])&#34;
+
+        boundaries, polygon_input = self.get_polygon_boundaries(polygon)
+
+        full_dataset_path = f&#34;{self.public_data_url}{region}/ept.json&#34;
+
+        fetch_json[&#39;pipeline&#39;][0][&#39;filename&#39;] = full_dataset_path
+        fetch_json[&#39;pipeline&#39;][0][&#39;bounds&#39;] = boundaries
+
+        fetch_json[&#39;pipeline&#39;][1][&#39;polygon&#39;] = polygon_input
+
+        fetch_json[&#39;pipeline&#39;][6][&#39;out_srs&#39;] = f&#39;EPSG:{self.output_epsg}&#39;
+
+#         fetch_json[&#39;pipeline&#39;][7][&#39;filename&#39;] = self.out_put_laz_path
+#         fetch_json[&#39;pipeline&#39;][8][&#39;filename&#39;] = self.out_put_tif_path
+
+        pipeline = pdal.Pipeline(json.dumps(fetch_json))
+
+        return pipeline
+
+    def runPipeline(self, region: str, polygon: Polygon):
+        &#34;&#34;&#34;reads the point cloud data from the EPT resource on AWS. We give it a region and a boundary polygon.
+
+        Args:
+            region (str): region of the cloud data EPT resource 
+            polygon (Polygon): a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched.
+
+        Returns:
+            list: it returns a list of a numpy array of cloud point data 
+        &#34;&#34;&#34;
+        pipeline = self.getPipeline(region, polygon)
+
+        try:
+            pipeline.execute()
+            metadata = pipeline.metadata
+            log = pipeline.log
+            return pipeline.arrays, self.output_epsg
+        except RuntimeError as e:
+            print(e)
+
+    def __createDataFolderStruct(self):
+        &#34;&#34;&#34;This method creates a data/laz and data/tif dir if not exist
+        &#34;&#34;&#34;
+        if (not os.path.isdir(&#39;./data&#39;)):
+            os.mkdir(&#34;./data&#34;)
+            os.mkdir(&#34;./data/laz/&#34;)
+            os.mkdir(&#34;./data/tif/&#34;)
+        if (not os.path.isdir(&#39;./data/laz&#39;)):
+            os.mkdir(&#34;./data/laz/&#34;)
+        if (not os.path.isdir(&#39;./data/tif&#39;)):
+            os.mkdir(&#34;./data/tif/&#34;)</code></pre>
+</details>
+<h3>Methods</h3>
+<dl>
+<dt id="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.getPipeline"><code class="name flex">
+<span>def <span class="ident">getPipeline</span></span>(<span>self, region: str, polygon: shapely.geometry.polygon.Polygon)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This method prepares our fetching pipeline using by using pipeline json description found in the root directory of the package. </p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>region</code></strong> :&ensp;<code>str</code></dt>
+<dd>the region defines the region
+point cloud data resource. </dd>
+<dt><strong><code>polygon</code></strong> :&ensp;<code>Polygon</code></dt>
+<dd>the polygon
+is a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>pdal.Pipeline</code></dt>
+<dd>returns a prepared pdal pipeline object</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">    def getPipeline(self, region: str, polygon: Polygon):
+        &#34;&#34;&#34;This method prepares our fetching pipeline using by using pipeline json description found in the root directory of the package. 
+
+        Args:
+            region (str): the region defines the region  point cloud data resource. 
+            polygon (Polygon): the polygon  is a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched
+
+        Returns:
+            pdal.Pipeline: returns a prepared pdal pipeline object
+        &#34;&#34;&#34;
+
+        fetch_json = self.__readFetchJson(self.fetch_json_path)
+        # BOUND = &#34;([-10425171.94, -10423171.94], [5164494.71, 5166494.71])&#34;
+
+        boundaries, polygon_input = self.get_polygon_boundaries(polygon)
+
+        full_dataset_path = f&#34;{self.public_data_url}{region}/ept.json&#34;
+
+        fetch_json[&#39;pipeline&#39;][0][&#39;filename&#39;] = full_dataset_path
+        fetch_json[&#39;pipeline&#39;][0][&#39;bounds&#39;] = boundaries
+
+        fetch_json[&#39;pipeline&#39;][1][&#39;polygon&#39;] = polygon_input
+
+        fetch_json[&#39;pipeline&#39;][6][&#39;out_srs&#39;] = f&#39;EPSG:{self.output_epsg}&#39;
+
+#         fetch_json[&#39;pipeline&#39;][7][&#39;filename&#39;] = self.out_put_laz_path
+#         fetch_json[&#39;pipeline&#39;][8][&#39;filename&#39;] = self.out_put_tif_path
+
+        pipeline = pdal.Pipeline(json.dumps(fetch_json))
+
+        return pipeline</code></pre>
+</details>
+</dd>
+<dt id="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.get_polygon_boundaries"><code class="name flex">
+<span>def <span class="ident">get_polygon_boundaries</span></span>(<span>self, polygon: shapely.geometry.polygon.Polygon) -> tuple</span>
+</code></dt>
+<dd>
+<div class="desc"><p>This method is used to calculate rectangular bounds of a given polygon and returns a string representation of the calculated bounds in a '({[minx, maxx]},{[miny,maxy]})' format (i.e the format our pdal pipeline's reader.ept (<a href="https://pdal.io/stages/readers.ept.html#readers-ept">https://pdal.io/stages/readers.ept.html#readers-ept</a>) expects. example ([-8242669, -8242529], [4966549, 4966674])).
+It also returns a string format of the given polygon in a format that pdal pipeline's
+filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>polygon</code></strong> :&ensp;<code>Polygon</code></dt>
+<dd>a given shapely.geometry.Polygon object</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>tuple</code></dt>
+<dd>returns a 2 element tuple in which the first is
+a string representation of the calculated bounds in a '({[minx, maxx]},{[miny,maxy]})' format and the second is a string format of the given polygon in a format that pdal pipeline's
+filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def get_polygon_boundaries(self, polygon: Polygon) -&gt; tuple:
+    &#34;&#34;&#34;This method is used to calculate rectangular bounds of a given polygon and returns a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format (i.e the format our pdal pipeline&#39;s reader.ept (https://pdal.io/stages/readers.ept.html#readers-ept) expects. example ([-8242669, -8242529], [4966549, 4966674])).
+    It also returns a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+
+    Args:
+        polygon (Polygon): a given shapely.geometry.Polygon object
+
+    Returns:
+        tuple: returns a 2 element tuple in which the first is  a string representation of the calculated bounds in a &#39;({[minx, maxx]},{[miny,maxy]})&#39; format and the second is a string format of the given polygon in a format that pdal pipeline&#39;s  filters.crop opreation expects. i.e POLYGON((0 0, 5000 10000, 10000 0, 0 0))
+    &#34;&#34;&#34;
+    polygon_df = gpd.GeoDataFrame([polygon], columns=[&#39;geometry&#39;])
+
+    polygon_df.set_crs(epsg=self.output_epsg, inplace=True)
+    polygon_df[&#39;geometry&#39;] = polygon_df[&#39;geometry&#39;].to_crs(
+        epsg=self.input_epsg)
+
+    minx, miny, maxx, maxy = polygon_df[&#39;geometry&#39;][0].bounds
+
+    polygon_input = &#39;POLYGON((&#39;
+
+    xcord, ycord = polygon_df[&#39;geometry&#39;][0].exterior.coords.xy
+    for x, y in zip(list(xcord), list(ycord)):
+        polygon_input += f&#39;{x} {y}, &#39;
+    polygon_input = polygon_input[:-2]
+    polygon_input += &#39;))&#39;
+
+    return f&#34;({[minx, maxx]},{[miny,maxy]})&#34;, polygon_input</code></pre>
+</details>
+</dd>
+<dt id="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.runPipeline"><code class="name flex">
+<span>def <span class="ident">runPipeline</span></span>(<span>self, region: str, polygon: shapely.geometry.polygon.Polygon)</span>
+</code></dt>
+<dd>
+<div class="desc"><p>reads the point cloud data from the EPT resource on AWS. We give it a region and a boundary polygon.</p>
+<h2 id="args">Args</h2>
+<dl>
+<dt><strong><code>region</code></strong> :&ensp;<code>str</code></dt>
+<dd>region of the cloud data EPT resource </dd>
+<dt><strong><code>polygon</code></strong> :&ensp;<code>Polygon</code></dt>
+<dd>a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched.</dd>
+</dl>
+<h2 id="returns">Returns</h2>
+<dl>
+<dt><code>list</code></dt>
+<dd>it returns a list of a numpy array of cloud point data</dd>
+</dl></div>
+<details class="source">
+<summary>
+<span>Expand source code</span>
+</summary>
+<pre><code class="python">def runPipeline(self, region: str, polygon: Polygon):
+    &#34;&#34;&#34;reads the point cloud data from the EPT resource on AWS. We give it a region and a boundary polygon.
+
+    Args:
+        region (str): region of the cloud data EPT resource 
+        polygon (Polygon): a shapely.geometry.Polygon object which defines the boundaries of our cloud data points to be fetched.
+
+    Returns:
+        list: it returns a list of a numpy array of cloud point data 
+    &#34;&#34;&#34;
+    pipeline = self.getPipeline(region, polygon)
+
+    try:
+        pipeline.execute()
+        metadata = pipeline.metadata
+        log = pipeline.log
+        return pipeline.arrays, self.output_epsg
+    except RuntimeError as e:
+        print(e)</code></pre>
+</details>
+</dd>
+</dl>
+</dd>
+</dl>
+</section>
+</article>
+<nav id="sidebar">
+<h1>Index</h1>
+<div class="toc">
+<ul></ul>
+</div>
+<ul id="index">
+<li><h3>Super-module</h3>
+<ul>
+<li><code><a title="AgriTech-Lidar-data-pkg" href="index.html">AgriTech-Lidar-data-pkg</a></code></li>
+</ul>
+</li>
+<li><h3><a href="#header-classes">Classes</a></h3>
+<ul>
+<li>
+<h4><code><a title="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch" href="#AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch">Lidar_Data_Fetch</a></code></h4>
+<ul class="">
+<li><code><a title="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.getPipeline" href="#AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.getPipeline">getPipeline</a></code></li>
+<li><code><a title="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.get_polygon_boundaries" href="#AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.get_polygon_boundaries">get_polygon_boundaries</a></code></li>
+<li><code><a title="AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.runPipeline" href="#AgriTech-Lidar-data-pkg.lidar_fetch_data.Lidar_Data_Fetch.runPipeline">runPipeline</a></code></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</nav>
+</main>
+<footer id="footer">
+<p>Generated by <a href="https://pdoc3.github.io/pdoc"><cite>pdoc</cite> 0.8.1</a>.</p>
+</footer>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/9.12.0/highlight.min.js"></script>
+<script>hljs.initHighlightingOnLoad()</script>
+</body>
+</html>
