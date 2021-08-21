@@ -15,7 +15,7 @@ err_msgs = ErrorMsgs.getErrorObj()
 class Lidar_Data_Fetch:
     """This class is used to fetch lidar elevation data points from a public data file ("https://s3-us-west-2.amazonaws.com/usgs-lidar-public/").
     It uses pdal.io pipeline (https://pdal.io/) to fetch, translate and manipulate cloud datapoints under the hood. the pdal.io pipeline expects
-    a pipeline description in the form of JSON. A template for the pipeline json file is defined the root directory, fetch.json file.
+    a pipeline description in the form of JSON. A template for the pipeline json file is defined int the root directory (fetch.json file).
     """
 
     def __init__(self, public_data_url="https://s3-us-west-2.amazonaws.com/usgs-lidar-public/", epsg=26915, fetch_json_path="./fetch.json") -> None:
