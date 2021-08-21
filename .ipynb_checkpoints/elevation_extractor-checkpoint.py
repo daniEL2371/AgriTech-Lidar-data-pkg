@@ -52,6 +52,8 @@ class ElevationExtractor:
         return df
 
     def covert_crs(self, crs_epgs: int, df: gpd.GeoDataFrame) -> gpd.GeoDataFrame:
-
-        df['geometry'] = df['geometry'].to_crs(crs_epgs)
-        return df
+        
+        df_copy = df.copy()
+        df_copy['geometry'] = df_copy['geometry'].to_crs(crs_epgs)
+        df_copy = df_copy.set_crs(epsg=crs_epgs)
+        return df_copy
