@@ -72,7 +72,7 @@ class PythonLidarPackage:
         self.epsg = crs_epsg
         self.fetcher = Lidar_Data_Fetch(PUBLIC_DATA_URL, epsg=crs_epsg)
         self.ee = ElevationExtractor(crs_epgs=crs_epsg)
-    
+
     def __get_region_from_boundary(self, bounds: Boundaries):
         filtered_df = meta_data.loc[
             (meta_data['xmin'] <= bounds.xmin)
@@ -90,19 +90,18 @@ class PythonLidarPackage:
             epsg=3857)
 
         minx, miny, maxx, maxy = polygon_df['geometry'][0].bounds
-        
+
         bounds = Boundaries(miny, minx, maxy, maxx)
-        
+
         filtred_df = self.__get_region_from_boundary(bounds)
         filenames = filtred_df['filename'].to_list()
         years = filtred_df['year'].to_list()
-        
+
         filename_year = dict()
 
         for filename, year in zip(filenames, years):
             filename_year[year] = filename
 
-     
         return filename_year
 
     def get_elevation_df(self, polygon: Polygon, from_cache=True, enforce_cache=True):
@@ -115,20 +114,21 @@ class PythonLidarPackage:
             return read_obj(cache_file_name)
 
         regions_year_dict = self.__get_regions(polygon)
-        
+
         ind = 0
-    
+
         for year in regions_year_dict:
-            
-            
+
             file_name = regions_year_dict[year]
             if year == 0:
                 year = "Unknown"
-            
-            try:
-                print(f"trying to Fetch elevation data for year {year} from file_name {file_name}...")
 
-                data, output_epsg = self.fetcher.runPipeline(file_name, polygon)
+            try:
+                print(
+                    f"trying to Fetch elevation data for year {year} from file_name {file_name}...")
+
+                data, output_epsg = self.fetcher.runPipeline(
+                    file_name, polygon)
                 df = self.ee.get_elevetion(data)
                 result[year] = df
             except:
@@ -142,14 +142,14 @@ class PythonLidarPackage:
 
     def save_elevation_geodata(self, df,  file_name: str, save_format="shp"):
 
-#         polygon_df = gpd.GeoDataFrame([polygon], columns=['geometry'])
-#         polygon_df.set_crs(epsg=self.epsg, inplace=True)
+        #         polygon_df = gpd.GeoDataFrame([polygon], columns=['geometry'])
+        #         polygon_df.set_crs(epsg=self.epsg, inplace=True)
 
         if save_format == "shp":
             df.to_file(f"{file_name}.shp")
 
         elif save_format == "geojson":
-            df.to_file(f"{file_name}.geojson", driver='GeoJSON') 
+            df.to_file(f"{file_name}.geojson", driver='GeoJSON')
 
         else:
             print("Unsupported format, geojson and shp are only supported formats")
@@ -160,31 +160,29 @@ class PythonLidarPackage:
 
         df.plot(column='elevation', ax=ax, legend=True, cmap=cmap)
         plt.show()
-    
+
     def get_3D_visualzation(self, df, s=0.01, color="blue"):
-        
+
         x = df.geometry.x
         y = df.geometry.y
         z = df.elevation
-        
+
         points = np.vstack((x, y, z)).transpose()
-        
-      
+
         fig, ax = plt.subplots(1, 1, figsize=(12, 10))
         ax = plt.axes(projection='3d')
-        ax.scatter(points[:,0], points[:,1], points[:,2],  s=0.01, color="blue")
+        ax.scatter(points[:, 0], points[:, 1],
+                   points[:, 2],  s=0.01, color="blue")
         plt.show()
-    
+
     def subsampling_interpolation(self, df: gpd.GeoDataFrame, resolution: int):
         df_meter = df.copy()
         df_meter['geometry'] = df_meter.geometry.to_crs(metric_epsg)
         df_meter = df_meter.set_crs(epsg=metric_epsg)
-        
+
         subsample_df = subsample.grid_barycenter_sample(df_meter, resolution)
         print(f"subsampled number of points {subsample_df.shape[0]}")
         return subsample_df
-        
-
 
     def covert_crs(self, df: gpd.GeoDataFrame, crs_epgs: int) -> gpd.GeoDataFrame:
 
