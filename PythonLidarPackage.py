@@ -244,6 +244,9 @@ class PythonLidarPackage:
         Args:
             df (geopandas.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             resolution (int): The resolution defines the grid area (in meter square) which a single point represents. 
+
+        Returns:
+            geopandas.GeoDataFrame: a subsampled interpolated geopandas dataframe
         """
         df_meter = df.copy()
         df_meter['geometry'] = df_meter.geometry.to_crs(metric_epsg)
