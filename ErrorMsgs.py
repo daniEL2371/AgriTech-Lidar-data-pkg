@@ -1,5 +1,4 @@
 
-import laspy
 
 err_obj = {"FETCH_JSON_FILE_NOT_FOUND": "fetch json file not found"}
 

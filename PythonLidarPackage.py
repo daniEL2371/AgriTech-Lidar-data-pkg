@@ -96,7 +96,7 @@ class PythonLidarPackage:
             bounds (Boundaries): a Boundaries object which defines a bound in form of xmin, ymin, xmax, ymax
 
         Returns:
-            gpd.GeoDataFrame: a dataframe containing rows of region name, filename location and year of the could point dataset containing the boundary defined 
+            geopandas.GeoDataFrame: a dataframe containing rows of region name, filename location and year of the could point dataset containing the boundary defined 
         """
         filtered_df = meta_data.loc[
             (meta_data['xmin'] <= bounds.xmin)
@@ -187,7 +187,7 @@ class PythonLidarPackage:
         """This method saves a geopandas dataframe containing elevation points.
 
         Args:
-            df (gpd.GeoDataFrame): a geopandas data frame to be saved, the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
+            df (geopandas.GeoDataFrame): a geopandas data frame to be saved, the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             file_name (str): the name of the file to be saved. 
             save_format (str, optional): the formats to be used to save the dataframe, two format options are supported, 'shp' and 'geojson'. Defaults to "shp".
         """
@@ -208,7 +208,7 @@ class PythonLidarPackage:
         """Plots a 2D heat map for the cloud datapoints of geopandas dataframe using matplotlib
 
         Args:
-            df (gpd.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
+            df (geopandas.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             cmap (str, optional): color map for the heatmap (i.e refer to https://matplotlib.org/stable/gallery/color/colormap_reference.html). Defaults to "terrain".
         """
 
@@ -221,7 +221,7 @@ class PythonLidarPackage:
         """Plots a 3D terrain scatter plot for the cloud datapoints of geopandas dataframe using matplotlib
 
         Args:
-            df ([type]): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
+            df (geopandas.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             s (float, optional): S value. Defaults to 0.01.
             color (str, optional): color of the points. Defaults to "blue".
         """
@@ -242,7 +242,7 @@ class PythonLidarPackage:
         """This method  accepts a geopandas dataframe and a resoultion and implements sub-sampling methods for reducing point cloud data density using grid system.
 
         Args:
-            df (gpd.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
+            df (geopandas.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             resolution (int): The resolution defines the grid area (in meter square) which a single point represents. 
         """
         df_meter = df.copy()
@@ -257,11 +257,11 @@ class PythonLidarPackage:
         """This method accepts a geopandas dataframe and a CRS and converts the dataframe to the provided coordinate reference system
 
         Args:
-            df (gpd.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
+            df (geopandas.GeoDataFrame): a geopandas data frame,  the dataframe must contain int sereis cloumn called elevation and and a geometry point series column called geometry.
             crs_epgs (int): [description]
 
         Returns:
-            gpd.GeoDataFrame: an integer EPSG value of coordinate reference system, (i.e refer to https://epsg.io/)
+            geopandas.GeoDataFrame: an integer EPSG value of coordinate reference system, (i.e refer to https://epsg.io/)
         """
 
         return self.ee.covert_crs(crs_epgs, df)
