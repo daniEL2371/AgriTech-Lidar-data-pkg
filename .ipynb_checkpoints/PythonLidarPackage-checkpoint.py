@@ -10,6 +10,8 @@ import pandas as pd
 import matplotlib.pyplot as plt
 from mpl_toolkits import mplot3d
 import numpy as np
+import subsample
+
 
 from boundaries import Boundaries
 
@@ -17,6 +19,7 @@ from boundaries import Boundaries
 PUBLIC_DATA_URL = "https://s3-us-west-2.amazonaws.com/usgs-lidar-public/"
 cache_folder = "./cache"
 metadata_path = "./meta_data3.csv"
+metric_epsg = 32643
 
 try:
     meta_data = pd.read_csv(metadata_path)
@@ -137,20 +140,16 @@ class PythonLidarPackage:
 
         return result
 
-    def save_elevation_geodata(self, df, polygon: Polygon,  file_name: str, save_format="shp"):
+    def save_elevation_geodata(self, df,  file_name: str, save_format="shp"):
 
-        polygon_df = gpd.GeoDataFrame([polygon], columns=['geometry'])
-        polygon_df.set_crs(epsg=self.epsg, inplace=True)
+#         polygon_df = gpd.GeoDataFrame([polygon], columns=['geometry'])
+#         polygon_df.set_crs(epsg=self.epsg, inplace=True)
 
         if save_format == "shp":
-            df.to_file(f"{file_name}_elevation.shp")
-            polygon_df.to_file(f"{file_name}_boundaries.shp")
+            df.to_file(f"{file_name}.shp")
 
         elif save_format == "geojson":
-            df.to_file(
-                f"{file_name}_elevation.geojson", driver='GeoJSON')
-            polygon_df.to_file(
-                f"{file_name}_boundaries.geojson", driver='GeoJSON')
+            df.to_file(f"{file_name}.geojson", driver='GeoJSON') 
 
         else:
             print("Unsupported format, geojson and shp are only supported formats")
@@ -175,6 +174,16 @@ class PythonLidarPackage:
         ax = plt.axes(projection='3d')
         ax.scatter(points[:,0], points[:,1], points[:,2],  s=0.01, color="blue")
         plt.show()
+    
+    def subsampling_interpolation(self, df: gpd.GeoDataFrame, resolution: int):
+        df_meter = df.copy()
+        df_meter['geometry'] = df_meter.geometry.to_crs(metric_epsg)
+        df_meter = df_meter.set_crs(epsg=metric_epsg)
+        
+        subsample_df = subsample.grid_barycenter_sample(df_meter, resolution)
+        print(f"subsampled number of points {subsample_df.shape[0]}")
+        return subsample_df
+        
 
 
     def covert_crs(self, df: gpd.GeoDataFrame, crs_epgs: int) -> gpd.GeoDataFrame:
