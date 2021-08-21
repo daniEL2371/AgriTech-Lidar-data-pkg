@@ -42,6 +42,7 @@ class Lidar_Data_Fetch:
         polygon_df.set_crs(epsg=self.output_epsg, inplace=True)
         polygon_df['geometry'] = polygon_df['geometry'].to_crs(
             epsg=self.input_epsg)
+        
         minx, miny, maxx, maxy = polygon_df['geometry'][0].bounds
 
         polygon_input = 'POLYGON(('
@@ -52,7 +53,6 @@ class Lidar_Data_Fetch:
         polygon_input = polygon_input[:-2]
         polygon_input += '))'
         
-        print(polygon_input)
 
         return f"({[minx, maxx]},{[miny,maxy]})", polygon_input
 
@@ -72,8 +72,8 @@ class Lidar_Data_Fetch:
 
         fetch_json['pipeline'][6]['out_srs'] = f'EPSG:{self.output_epsg}'
 
-        fetch_json['pipeline'][7]['filename'] = self.out_put_laz_path
-        fetch_json['pipeline'][8]['filename'] = self.out_put_tif_path
+#         fetch_json['pipeline'][7]['filename'] = self.out_put_laz_path
+#         fetch_json['pipeline'][8]['filename'] = self.out_put_tif_path
 
         pipeline = pdal.Pipeline(json.dumps(fetch_json))
 

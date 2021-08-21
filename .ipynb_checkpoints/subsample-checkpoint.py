@@ -1,7 +1,14 @@
 import geopandas as gpd
 import numpy as np
 
-def subsample(elevation_point_array_data, method="grid_barycenter"):
+
+def get_points_from_df(df: gpd.GeoDataFrame):
+    x = df.geometry.x
+    y = df.geometry.y
+    z = df.elevation
+    points = np.vstack((x, y, z)).transpose()
+
+def subsample(df: gpd.GeoDataFrame, method="grid_barycenter", resolution: int=3):
     
     data = elevation_point_array_data
     points = np.vstack((data[0]["X"], data[0]["Y"], data[0]["Z"])).transpose()
@@ -26,10 +33,10 @@ def subsample(elevation_point_array_data, method="grid_barycenter"):
     elif method == "grid_center":
         grid_candidate_center
         
-def grid_barycenter_sample(elevation_point_array_data):
+def grid_barycenter_sample(df: gpd.GeoDataFrame):
     return subsample(elevation_point_array_data, method="grid_barycenter")
 
-def grid_candidate_center_sample(elevation_point_array_data):
+def grid_candidate_center_sample(df: gpd.GeoDataFrame):
     return subsample(elevation_point_array_data, method="grid_center")
 
     
