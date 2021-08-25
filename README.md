@@ -30,7 +30,11 @@ pip install -r requirements.txt
 - The USGS 3D Elevation Program (3DEP) provides access to lidar point cloud data from the 3DEP repository. The adoption of cloud storage and computing by 3DEP allows users to work with massive datasets of lidar point cloud data without having to download them to local machines.
 - The point cloud data is freely accessible from AWS in EPT format. Entwine Point Tile (EPT) is a simple and flexible octree-based storage format for point cloud data. The organization of an EPT dataset contains JSON metadata portions as well as binary point data. The JSON file is core metadata required to interpret the contents of an EPT datase
 
-## Usage
+## Usage and documentation
 - A simple notebook on how to use the package is presented inside pkg_demonstration.ipynb
-- For more please checkout the documentation here https://agri-tech-lidar-pkg.herokuapp.com/
+- You can the documentation here https://agri-tech-lidar-pkg.herokuapp.com/
+- Optionally you can access the documentation in the follwoing path at the root dir of this package
+```
+AgriTech-Lidar-data-pkg/docs/AgriTech-Lidar-data-pkg/index.html
+```
 
